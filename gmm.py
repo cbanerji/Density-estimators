@@ -3,7 +3,6 @@ from scipy import random
 import matplotlib.transforms as transforms
 from scipy.stats import multivariate_normal
 
-
 def gen_data(k=3, dim=2, points_per_cluster=200, lim=[-10, 10]):
     '''
     Generates data from a random mixture of Gaussians in a given range.
@@ -25,13 +24,12 @@ def gen_data(k=3, dim=2, points_per_cluster=200, lim=[-10, 10]):
     x = np.array(x)
     return x
 
-
 class Gauss_mix_model():
     def __init__(self, X, k = 2, dim = 1):
         '''
         Parameters:
         k: Number of Gaussian components/ clusters
-        dim: Dimension of each gaussian components
+        dim: Dimension of each Gaussian components
         mu: Mean value of each Gaussian component (k,dim)
             - initial values random from uniform[-10, 10]
         sigma: diagonal covariance matrix for each component (k, dim, dim)
@@ -93,17 +91,12 @@ class Gauss_mix_model():
 if __name__ == "__main__":
     # Generate random 2D data with 3 clusters
     X = gen_data(k=3, dim=2, points_per_cluster=1000)
-    # Create a Gaussian Mixture Model
-    gmm = GMM(X,3,2)
-    # Training the GMM using EM
-    num_iters = 30
-    # Saving log-likelihood
-    log_likelihood = [gmm.log_likelihood(X)]
+    # Instantiating the Gaussian Mixture Model class
+    gmm = Gauss_mix_model(X,3,2)
+    num_iters = 30 # no. of training iteration
+    log_likelihood = [gmm.log_likelihood(X)] #storing the result
     for e in range(num_iters):
-        # E-step
-        gmm.e_step()
-        # M-step
-        gmm.m_step()
-        # Computing log-likelihood
-        log_likelihood.append(gmm.log_likelihood(X))
-        print("Iteration: {}, log-likelihood: {:.4f}".format(e+1, log_likelihood[-1]))
+        gmm.e_step() # E-step
+        gmm.m_step() # M-step
+        log_likelihood.append(gmm.log_likelihood(X)) # Calculate log-likelihood
+        print("Iteration: {}, log-likelihood: {:.4f}".format(e+1, log_likelihood[-1])) #Display
