@@ -39,7 +39,7 @@ if __name__ == "__main__":
     bins = np.arange(np.min(samp),np.max(samp), b_len) #get bin levels
 
     # Calculate binning counts
-    ar = np.zeros((10,1))
+    ar = np.zeros((M,1))
     for j in samp:
         getind = (np.where(bins<=j)[0])
         ind = getind[-1]
