@@ -1,4 +1,3 @@
-# Probabilistic_models
-Contains collections of probabilistic models.
-- gmm.py
-: Pytorch implementation of a Gaussian Mixture Model (GMM).
+# Density-estimators :
+ + **histogram** -- Implements a histogram density estimator. Observed $$x_1,\cdots,x_n$$, where $$n$$ is the number of observed samples and $$x_i \in [-10,10]$$. So $$[-10,10]$$ is partitioned into $$M= 10$$ bins/containers and we count the occurance of sample datapoints in these bins. Density estimation from histogram, $$\hat{p}_{n}(x)=\frac{\#counts\; B_{l}}{n}\times\frac{1}{bin\;length}=\frac{M}{n}\Sigma_{i=1}^n\;I(x_{i}\in B_{l})$$, [reference](https://www.google.com/url?sa=i&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=0CAQQw7AJahcKEwiQ3OPFmMD5AhUAAAAAHQAAAAAQAg&url=http%3A%2F%2Ffaculty.washington.edu%2Fyenchic%2F18W_425%2FLec6_hist_KDE.pdf&psig=AOvVaw049YeZ7dt_dCh_-IKI44uL&ust=1660355540286934).
+ + **gmm** -- Implements a gaussian mixture model.
