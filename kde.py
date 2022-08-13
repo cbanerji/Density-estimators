@@ -33,40 +33,40 @@ def gen_data(k=3, dim=1, points_per_cluster=100, lim=[-10, 10]):
     x = np.clip(np.array(x),-10,10)
     return x, np.squeeze(mean), np.squeeze(cove)
 
-# Define Gaussian function
-def gauss(j_pass, mu=0.0, sigma=1.0):
-   '''
-   Return the value of the Gaussian probability function with
-   mean (mu) and standard deviation (sigma) at the given x value.
-   '''
-   j_pass = float(j_pass - mu) / sigma
-   return math.exp(-j_pass*j_pass/2.0) / math.sqrt(2.0*math.pi) / sigma
 
-def cal_den(x, sigma):
+# Define Gaussian function
+def gauss(j, m, h):
+   j = float(m-j) / h
+   return math.exp(-j*j/2.0) / math.sqrt(2.0*math.pi) / h
+
+def cal_den(x, h):
     den = []
     n = x.size
-    for j in x:
+    hm = np.linspace(np.min(x),np.max(x), len(x))
+    for j in hm:
         sm = []
         for m in x:
-            j_pass = (j-m)/sigma
-            gauss_val = gauss(j_pass, sigma)
+            gauss_val = gauss(j,m,h)
             sm.append(gauss_val)
         sm_sum = sum(sm)
-        kde = sm_sum/ (n*sigma)
+        kde = (1/(n*h))*sm_sum
         den.append(kde)
     fin_den.append(den)
     return fin_den
 
 if __name__ == "__main__":
     fin_den = []
-    sigma  = 3
+    h  = 0.75
     x,mu,co = gen_data()
-    dnsi = cal_den(x, sigma)
+    dnsi = cal_den(x, h)
     dnsi = [dnsi for sublist in dnsi for dnsi in sublist] #Flatten
     #plot
-    a_val = np.linspace(np.min(dnsi),np.max(dnsi), len(dnsi))
+    a_val = np.linspace(np.min(x),np.max(x), len(x))
     val = np.arange(np.min(x),np.max(x), 0.5)
     for t in range(3):
         plt.plot(val, norm.pdf(val, mu[t], co[t]))
-    plt.plot(a_val, dnsi)
+    plt.show()
+    plt.plot(a_val, dnsi, '-')
+    #plt.hist(dnsi, bins=50)
+    #plt.fill(a_val,dnsi,'-k',fc='#AAAAFF')
     plt.show()
