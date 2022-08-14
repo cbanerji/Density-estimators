@@ -3,6 +3,7 @@ from scipy import random
 import matplotlib.pyplot as plt
 from scipy.stats import norm
 import statistics
+from sklearn.preprocessing import normalize
 import matplotlib.transforms as transforms
 from scipy.stats import multivariate_normal
 
@@ -44,11 +45,15 @@ if __name__ == "__main__":
         getind = (np.where(bins<=j)[0])
         ind = getind[-1]
         ar[ind] += 1
-    #Plot the sampled distributions
-    for t in range(3):
-        plt.plot(bins, norm.pdf(bins, mu[t], co[t]))
-    plt.show()
-
+    ar = normalize(ar, norm='max', axis =0)
     # Plot histogram
-    plt.bar(bins.tolist(),np.squeeze(ar.tolist()), width = 1, align='center')
+    plt.plot()
+    plt.bar(bins.tolist(),np.squeeze(ar.tolist()), width = 1.5, align='center', color = 'maroon', label = 'Histogram')
+
+    #Plot the data generating distribution
+    cols = ['blue','forestgreen','orangered']
+    lab = ['Dist01','Dist02','Dist03']
+    for t in range(3):
+        plt.plot(bins, norm.pdf(bins, mu[t], co[t]),color = cols[t], linewidth = 2, label = lab[t])
+    plt.legend()
     plt.show()
