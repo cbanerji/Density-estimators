@@ -10,16 +10,9 @@ import matplotlib.transforms as transforms
 from scipy.stats import multivariate_normal
 
 # Generate synthetic data for density estimation
-def gen_data(k=3, dim=1, points_per_cluster=100, lim=[-10, 10]):
+def gen_data(k=3, dim=1, points_per_cluster=500, lim=[-10, 10]):
     '''
     Generates data from a random mixture of Gaussians in a given range.
-    input:
-        - k: Number of Gaussian clusters
-        - dim: Dimension of generated points
-        - points_per_cluster: Number of points to be generated for each cluster
-        - lim: Range of mean values
-    output:
-        - X: Generated points (points_per_cluster*k, dim)
     '''
     x = []
     cove = []
@@ -31,19 +24,18 @@ def gen_data(k=3, dim=1, points_per_cluster=100, lim=[-10, 10]):
         x += list(_x)
         cove.append(cov)
     x = np.clip(np.array(x),-10,10)
-    return x, np.squeeze(mean), np.squeeze(cove)
+    return x, np.squeeze(mean), np.squeeze(cove) #return data, params. of distr.
 
-
-# Define Gaussian function
+# Define Gaussian Kernel function
 def gauss(j, m, h):
    j = float(m-j) / h
    return math.exp(-j*j/2.0) / math.sqrt(2.0*math.pi) / h
 
-def cal_den(x, h):
+# Calculate KDE
+def cal_den(x, h, a_val):
     den = []
     n = x.size
-    hm = np.linspace(np.min(x),np.max(x), len(x))
-    for j in hm:
+    for j in a_val:
         sm = []
         for m in x:
             gauss_val = gauss(j,m,h)
@@ -54,19 +46,23 @@ def cal_den(x, h):
     fin_den.append(den)
     return fin_den
 
+
 if __name__ == "__main__":
     fin_den = []
     h  = 0.75
-    x,mu,co = gen_data()
-    dnsi = cal_den(x, h)
+    x,mu,co = gen_data() #obtain synthetic data
+    a_val = np.linspace(np.min(x),np.max(x), len(x)) #generate ddatapoints for kde cal.
+    dnsi = cal_den(x, h, a_val) #Calculate kde, for all datapoints in 'a_val'
     dnsi = [dnsi for sublist in dnsi for dnsi in sublist] #Flatten
-    #plot
-    a_val = np.linspace(np.min(x),np.max(x), len(x))
+
+    #--Plotting--
+    '''
+    # plot data generating distributions
     val = np.arange(np.min(x),np.max(x), 0.5)
     for t in range(3):
         plt.plot(val, norm.pdf(val, mu[t], co[t]))
-    plt.show()
-    plt.plot(a_val, dnsi, '-')
-    #plt.hist(dnsi, bins=50)
-    #plt.fill(a_val,dnsi,'-k',fc='#AAAAFF')
+    '''
+    plt.hist(x, density = True, bins = 100) #plot normed histogram of data
+    plt.plot(a_val, dnsi, '-k', label='KDE density') #plot kde density estimate
+    plt.legend()
     plt.show()
